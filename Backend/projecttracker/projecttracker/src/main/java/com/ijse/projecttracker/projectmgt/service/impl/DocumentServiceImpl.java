@@ -37,6 +37,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
+    @Value("${app.base.url}")
+    private String baseUrl;
+
     @Override
     public DocumentResponseDTO uploadDocument(Long projectId, MultipartFile file, UserDetailsImpl currentUser) {
         Project project = projectRepo.findById(projectId)
@@ -45,8 +48,9 @@ public class DocumentServiceImpl implements DocumentService {
         User uploader = userRepo.findById(currentUser.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        String filePath = uploadDir + "/" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        File dest = new File(filePath);
+        String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+        File dest = new File(uploadDir + "/" + filename);
         dest.getParentFile().mkdirs();
         try {
             file.transferTo(dest);
@@ -54,9 +58,11 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store file", e);
         }
 
+        String relativePath = "/uploads/" + filename;
+
         Document document = Document.builder()
                 .filename(file.getOriginalFilename())
-                .storagePath(filePath)
+                .storagePath(relativePath)
                 .uploadedAt(Instant.now())
                 .uploadedBy(uploader)
                 .project(project)
@@ -80,7 +86,23 @@ public class DocumentServiceImpl implements DocumentService {
     private DocumentResponseDTO convertToDTO(Document document) {
         DocumentResponseDTO dto = modelMapper.map(document, DocumentResponseDTO.class);
         dto.setProjectId(document.getProject().getId());
-        dto.setUploadedById(document.getUploadedBy().getId());
+
+        if (document.getUploadedBy() != null) {
+            dto.setUploadedById(document.getUploadedBy().getId());
+            dto.setUploadedByName(
+                    document.getUploadedBy().getFullName() != null
+                            ? document.getUploadedBy().getFullName()
+                            : "Unknown User"
+            );
+        }
+
+        String filename = new File(document.getStoragePath()).getName();
+        dto.setStoragePathFull(baseUrl + "/uploads/" + filename);
+
         return dto;
     }
+
+
+
 }
+

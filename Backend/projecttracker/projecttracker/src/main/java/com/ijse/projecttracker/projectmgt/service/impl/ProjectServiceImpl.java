@@ -168,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(d -> DocumentResponseDTO.builder()
                         .id(d.getId())
                         .filename(d.getFilename())
-                        .storagePath(d.getStoragePath())
+                        .storagePathFull(d.getStoragePath())
                         .uploadedAt(d.getUploadedAt())
                         .uploadedById(d.getUploadedBy() != null ? d.getUploadedBy().getId() : null)
                         .projectId(d.getProject() != null ? d.getProject().getId() : null)

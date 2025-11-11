@@ -12,9 +12,10 @@ import java.time.Instant;
 public class DocumentResponseDTO {
     private Long id;
     private String filename;
-    private String storagePath;
+    private String storagePathFull;
     private Instant uploadedAt;
     private Long uploadedById;
+    private String uploadedByName;
     private Long projectId;
 }
 
