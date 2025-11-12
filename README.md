@@ -6,10 +6,10 @@
 ![Login](screenshots/Login.png)
 
 ### PI Projects
-![PI Projects](screenshots/PI projects.png)
+![PI Projects](screenshots/PI_projects.png)
 
 ### Project Details
-![Project Details](screenshots/Project details.png)
+![Project Details](screenshots/Project_details.png)
 
 ### Milestones
 ![Milestones](screenshots/Milestones.png)
@@ -18,7 +18,7 @@
 ![Signup](screenshots/Signup.png)
 
 ### Create Project
-![Create Project](screenshots/Create project.png)
+![Create Project](screenshots/Create_project.png)
 
 ### Admin Panel
-![Admin Panel](screenshots/Admin panel.png)
+![Admin Panel](screenshots/Admin_panel.png)
