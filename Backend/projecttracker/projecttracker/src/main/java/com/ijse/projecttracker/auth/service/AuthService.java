@@ -48,10 +48,10 @@ public class AuthService {
         UserRoleName roleToAssign;
         if (req.getAccountType() == AccountType.ADMIN) {
             roleToAssign = UserRoleName.ROLE_ADMIN;
-        } else if (req.getAccountType() == AccountType.SUPERVISOR) {
-            roleToAssign = UserRoleName.ROLE_SUPERVISOR;
+        } else if (req.getAccountType() == AccountType.PI) {
+            roleToAssign = UserRoleName.ROLE_PI;
         } else {
-            roleToAssign = UserRoleName.ROLE_STUDENT;
+            roleToAssign = UserRoleName.ROLE_MEMBER;
         }
 
         Role role = roleRepository.findByName(roleToAssign)
@@ -66,7 +66,7 @@ public class AuthService {
         user.getRoles().add(role);
         user.setCreatedAt(LocalDateTime.now());
 
-        if (req.getAccountType() == AccountType.STUDENT) {
+        if (req.getAccountType() == AccountType.MEMBER) {
             if (req.getBatchId() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Batch is required for students");
             }

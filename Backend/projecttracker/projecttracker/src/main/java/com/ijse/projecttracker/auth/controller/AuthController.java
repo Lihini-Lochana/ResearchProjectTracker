@@ -202,16 +202,14 @@ public class AuthController {
 
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/supervisors")
-    public ResponseEntity<List<Map<String, Object>>> getAllSupervisors(
+    @GetMapping("/pis")
+    public ResponseEntity<List<Map<String, Object>>> getAllPis(
             @AuthenticationPrincipal UserDetailsImpl currentUser
     ) {
 
-        System.out.println("Current admin: " + currentUser.getUsername());
+        List<User> pis = userRepository.findByRoleName(UserRoleName.ROLE_PI);
 
-        List<User> supervisors = userRepository.findByRoleName(UserRoleName.ROLE_SUPERVISOR);
-
-        List<Map<String, Object>> response = supervisors.stream().map(u -> {
+        List<Map<String, Object>> response = pis.stream().map(u -> {
             Map<String, Object> map = new HashMap<>();
             map.put("id", u.getId());
             map.put("fullName", u.getFullName());
@@ -219,7 +217,7 @@ public class AuthController {
             return map;
         }).toList();
 
-        System.out.println("Found supervisors: " + supervisors.size());
+        System.out.println("Found pis: " + pis.size());
         return ResponseEntity.ok(response);
     }
 
