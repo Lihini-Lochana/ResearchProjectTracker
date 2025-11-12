@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/user/**").hasAnyRole("MEMBER", "ADMIN", "PI")
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/api/admin/batches/**").hasAnyRole("MEMBER", "ADMIN", "PI")
+                        .requestMatchers("/api/admin/batches/**").permitAll()
 
 
                         .anyRequest().authenticated()
