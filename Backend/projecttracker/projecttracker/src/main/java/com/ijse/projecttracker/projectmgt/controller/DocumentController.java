@@ -19,7 +19,7 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('MEMBER')")
     @PostMapping("/{projectId}")
     public DocumentResponseDTO uploadDocument(@PathVariable Long projectId,
                                               @RequestParam("file") MultipartFile file,
