@@ -19,7 +19,7 @@ public class MilestoneController {
 
     private final MilestoneService milestoneService;
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('MEMBER')")
     @PostMapping("/{projectId}")
     public MilestoneResponseDTO addMilestone(@PathVariable Long projectId,
                                              @RequestBody MilestoneRequestDTO request,
@@ -33,7 +33,7 @@ public class MilestoneController {
         return milestoneService.listMilestones(projectId, currentUser);
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('MEMBER')")
     @PutMapping("/{milestoneId}")
     public MilestoneResponseDTO updateMilestone(@PathVariable Long milestoneId,
                                                 @RequestBody MilestoneRequestDTO request,
@@ -41,7 +41,7 @@ public class MilestoneController {
         return milestoneService.updateMilestone(milestoneId, request, currentUser);
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('MEMBER')")
     @DeleteMapping("/{milestoneId}")
     public void deleteMilestone(@PathVariable Long milestoneId,
                                 @AuthenticationPrincipal UserDetailsImpl currentUser) {
