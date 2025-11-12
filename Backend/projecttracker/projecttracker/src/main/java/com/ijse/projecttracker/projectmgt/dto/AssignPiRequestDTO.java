@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssignSupervisorRequestDTO {
+public class AssignPiRequestDTO {
     @NotNull
-    private Long supervisorId;
+    private Long piId;
 }
 

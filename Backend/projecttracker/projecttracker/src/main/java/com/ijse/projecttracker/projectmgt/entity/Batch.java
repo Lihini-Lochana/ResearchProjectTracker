@@ -24,6 +24,6 @@ public class Batch {
 
     @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<User> students;
+    private List<User> members;
 
 }

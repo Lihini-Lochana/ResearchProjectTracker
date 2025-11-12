@@ -39,13 +39,13 @@ public class ProjectServiceImpl implements ProjectService {
         project.setDescription(request.getDescription());
         project.setStartDate(request.getStartDate());
         project.setEndDate(request.getEndDate());
-        project.setStatus(request.getStatus() != null ? request.getStatus() : ProjectStatus.PLANNED);
+        project.setStatus(request.getStatus() != null ? request.getStatus() : ProjectStatus.PLANNING);
         project.setCreatedBy(user);
 
-        if (request.getSupervisorId() != null) {
-            User supervisor = userRepo.findById(request.getSupervisorId())
+        if (request.getPiId() != null) {
+            User supervisor = userRepo.findById(request.getPiId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supervisor not found"));
-            project.setSupervisor(supervisor);
+            project.setPi(supervisor);
         }
 
         if (request.getBatchId() != null) {
@@ -59,31 +59,47 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponseDTO> getProjectsForSupervisor(UserDetailsImpl currentUser) {
-        User supervisor = userRepo.findById(currentUser.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supervisor not found"));
+    public List<ProjectResponseDTO> getAllProjects(UserDetailsImpl currentUser) {
+        boolean isAdmin = currentUser.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        return projectRepo.findBySupervisor(supervisor)
+        if (!isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admins can access all projects");
+        }
+
+        return projectRepo.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<ProjectResponseDTO> getProjectsForPi(UserDetailsImpl currentUser) {
+        User pi = userRepo.findById(currentUser.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pi not found"));
+
+        return projectRepo.findByPi(pi)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProjectResponseDTO> getProjectsForStudent(UserDetailsImpl currentUser) {
+    public List<ProjectResponseDTO> getProjectsForMember(UserDetailsImpl currentUser) {
         User user = userRepo.findByIdWithBatch(currentUser.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
 
-        boolean isStudent = user.getRoles().stream()
-                .anyMatch(r -> r.getName() == UserRoleName.ROLE_STUDENT);
+        boolean isMember = user.getRoles().stream()
+                .anyMatch(r -> r.getName() == UserRoleName.ROLE_MEMBER);
 
-        if (!isStudent) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only students can access their projects");
+        if (!isMember) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only members can access their projects");
         }
 
         if (user.getBatch() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not assigned to any batch");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Member not assigned to any batch");
         }
 
         return projectRepo.findByBatch(user.getBatch())
@@ -112,10 +128,10 @@ public class ProjectServiceImpl implements ProjectService {
         if (request.getEndDate() != null) project.setEndDate(request.getEndDate());
         if (request.getStatus() != null) project.setStatus(request.getStatus());
 
-        if (request.getSupervisorId() != null) {
-            User supervisor = userRepo.findById(request.getSupervisorId())
+        if (request.getPiId() != null) {
+            User supervisor = userRepo.findById(request.getPiId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Supervisor not found"));
-            project.setSupervisor(supervisor);
+            project.setPi(supervisor);
         }
 
         if (request.getBatchId() != null) {
@@ -143,9 +159,9 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setEndDate(project.getEndDate());
         dto.setStatus(project.getStatus());
 
-        if (project.getSupervisor() != null) {
-            dto.setSupervisorFullName(project.getSupervisor().getFullName());
-            dto.setSupervisorEmail(project.getSupervisor().getEmail());
+        if (project.getPi() != null) {
+            dto.setPiFullName(project.getPi().getFullName());
+            dto.setPiEmail(project.getPi().getEmail());
         }
 
         if (project.getBatch() != null) {
@@ -168,7 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .map(d -> DocumentResponseDTO.builder()
                         .id(d.getId())
                         .filename(d.getFilename())
-                        .storagePath(d.getStoragePath())
+                        .storagePathFull(d.getStoragePath())
                         .uploadedAt(d.getUploadedAt())
                         .uploadedById(d.getUploadedBy() != null ? d.getUploadedBy().getId() : null)
                         .projectId(d.getProject() != null ? d.getProject().getId() : null)

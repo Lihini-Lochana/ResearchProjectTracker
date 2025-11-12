@@ -20,7 +20,7 @@ public class ProjectRequestDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private ProjectStatus status;
-    private Long supervisorId;
+    private Long piId;
     private Long batchId;
 }
 

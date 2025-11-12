@@ -34,8 +34,8 @@ public class Project {
     private ProjectStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supervisor_id")
-    private User supervisor;
+    @JoinColumn(name = "pi_id")
+    private User pi;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "batch_id")

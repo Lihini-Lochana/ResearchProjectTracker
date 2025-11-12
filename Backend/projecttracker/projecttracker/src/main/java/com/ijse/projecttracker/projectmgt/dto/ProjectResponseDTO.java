@@ -19,8 +19,8 @@ public class ProjectResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private ProjectStatus status;
-    private String supervisorFullName;
-    private String supervisorEmail;
+    private String piFullName;
+    private String piEmail;
     private String batchName;
     private List<MilestoneResponseDTO> milestones;
     private List<DocumentResponseDTO> documents;
