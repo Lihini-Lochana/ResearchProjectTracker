@@ -26,6 +26,13 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public List<ProjectResponseDTO> getAllProjects(@AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return projectService.getAllProjects(currentUser);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ProjectResponseDTO updateProject(@PathVariable Long id,
                                             @RequestBody ProjectRequestDTO request,
@@ -46,16 +53,16 @@ public class ProjectController {
         return projectService.getProjectById(id, currentUser);
     }
 
-    @PreAuthorize("hasRole('SUPERVISOR')")
-    @GetMapping("/supervisor")
-    public List<ProjectResponseDTO> getProjectsForSupervisor(@AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return projectService.getProjectsForSupervisor(currentUser);
+    @PreAuthorize("hasRole('PI')")
+    @GetMapping("/pi")
+    public List<ProjectResponseDTO> getProjectsForPi(@AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return projectService.getProjectsForPi(currentUser);
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/student")
-    public List<ProjectResponseDTO> getProjectsForStudent(@AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return projectService.getProjectsForStudent(currentUser);
+    @PreAuthorize("hasRole('MEMBER')")
+    @GetMapping("/member")
+    public List<ProjectResponseDTO> getProjectsForMember(@AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return projectService.getProjectsForMember(currentUser);
     }
 
 

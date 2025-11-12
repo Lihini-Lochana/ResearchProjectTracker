@@ -1,8 +1,6 @@
 package com.ijse.projecttracker.projectmgt.service;
 
 import com.ijse.projecttracker.auth.security.UserDetailsImpl;
-import com.ijse.projecttracker.projectmgt.dto.AssignBatchRequestDTO;
-import com.ijse.projecttracker.projectmgt.dto.AssignSupervisorRequestDTO;
 import com.ijse.projecttracker.projectmgt.dto.ProjectRequestDTO;
 import com.ijse.projecttracker.projectmgt.dto.ProjectResponseDTO;
 
@@ -11,10 +9,11 @@ import java.util.List;
 public interface ProjectService {
     ProjectResponseDTO createProject(ProjectRequestDTO request, UserDetailsImpl currentUser);
 
+    List<ProjectResponseDTO> getAllProjects(UserDetailsImpl currentUser);
 
-    List<ProjectResponseDTO> getProjectsForSupervisor(UserDetailsImpl currentUser);
+    List<ProjectResponseDTO> getProjectsForPi(UserDetailsImpl currentUser);
 
-    List<ProjectResponseDTO> getProjectsForStudent(UserDetailsImpl currentUser);
+    List<ProjectResponseDTO> getProjectsForMember(UserDetailsImpl currentUser);
 
     ProjectResponseDTO getProjectById(Long id, UserDetailsImpl currentUser);
 
